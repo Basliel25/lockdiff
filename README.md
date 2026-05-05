@@ -14,7 +14,36 @@ npm:
 
 ![npm lock diff](docs/npm_lock_diff.gif)
 
+## Installation
+
+Recommended (isolated, on PATH):
+
+```sh
+pipx install git+https://github.com/Basliel25/lockdiff
+```
+
+Or in a venv:
+
+```sh
+python -m venv .venv && .venv/bin/pip install git+https://github.com/Basliel25/lockdiff
+```
+
+From a clone, for development:
+
+```sh
+git clone https://github.com/Basliel25/lockdiff && cd lockdiff
+pip install -e .
+```
+
 ## Usage
+
+Once installed:
+
+```sh
+lockdiff old.lock new.lock
+```
+
+Without installing (from the repo's `src/` directory):
 
 ```sh
 python -m lockdiff old.lock new.lock
