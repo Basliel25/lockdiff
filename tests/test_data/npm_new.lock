@@ -1,0 +1,46 @@
+{
+  "name": "test-app",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "test-app",
+      "version": "1.0.0",
+      "dependencies": {
+        "express": "^4.19.0",
+        "debug": "^4.3.0",
+        "axios": "^1.6.0"
+      }
+    },
+    "node_modules/@types/node": {
+      "version": "20.10.0"
+    },
+    "node_modules/axios": {
+      "version": "1.6.2"
+    },
+    "node_modules/debug": {
+      "version": "4.3.4",
+      "dependencies": { "ms": "2.1.2" }
+    },
+    "node_modules/express": {
+      "version": "4.19.2",
+      "dependencies": {
+        "body-parser": "1.20.2",
+        "debug": "2.6.9"
+      }
+    },
+    "node_modules/express/node_modules/debug": {
+      "version": "2.6.9"
+    },
+    "node_modules/express/node_modules/ms": {
+      "version": "2.0.0"
+    },
+    "node_modules/body-parser": {
+      "version": "1.20.2"
+    },
+    "node_modules/ms": {
+      "version": "2.1.2"
+    }
+  }
+}
