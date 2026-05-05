@@ -1,1 +1,1 @@
-Read more at [Drawing Board](http://localhost:4322/vault/Lockdiff)
+Read more at [Drawing Board](https://basz-website.basgug25.workers.dev/vault/Lockdiff/)
