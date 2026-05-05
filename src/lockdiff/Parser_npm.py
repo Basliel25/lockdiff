@@ -1,5 +1,5 @@
 """
-Parse a package-lock.json (npm) file into a {(name, version): Package} dict.
+Parse a package-lock.json (npm) file into a {name: Package} dict.
 
 @author: Basliel B. Gugsa
 """
@@ -11,8 +11,12 @@ from pathlib import Path
 from .Parser import Package
 
 
-def parse_npm(path: Path) -> dict[tuple[str, str], Package]:
-    """Parse package-lock.json. Return {(name, version): Package}.
+def parse_npm(path: Path) -> dict[str, Package]:
+    """Parse package-lock.json. Return {name: Package}.
+
+    npm trees may contain multiple versions of the same package. We collapse
+    to one entry per name: prefer direct dependencies, then the
+    lexicographically highest version string.
     """
     with path.open("rb") as f:
         data = json.load(f)
@@ -33,30 +37,26 @@ def parse_npm(path: Path) -> dict[tuple[str, str], Package]:
     direct_names.update(root.get("devDependencies", {}).keys())
     direct_names.update(root.get("optionalDependencies", {}).keys())
 
-    result: dict[tuple[str, str], Package] = {}
+    result: dict[str, Package] = {}
 
     for install_path, entry in packages.items():
         if install_path == "":
-            continue  # skiping root
+            continue
 
         name = _name_from_path(install_path)
         if name is None:
-            continue  # workspace entries are ignored
+            continue
 
         pkg_version = entry.get("version")
         if pkg_version is None:
             continue
 
-        key = (name, pkg_version)
-        # Ignore dublicate install of same package
-        if key in result:
-            continue
+        is_direct = name in direct_names
+        candidate = Package(name=name, version=pkg_version, is_direct=is_direct)
 
-        result[key] = Package(
-            name=name,
-            version=pkg_version,
-            is_direct=name in direct_names,
-        )
+        existing = result.get(name)
+        if existing is None or _prefer(candidate, existing):
+            result[name] = candidate
 
     if not result:
         raise ValueError(f"{path}: parsed 0 packages, file is empty")
@@ -64,9 +64,20 @@ def parse_npm(path: Path) -> dict[tuple[str, str], Package]:
     return result
 
 
-def _name_from_path(install_path: str) -> str | None:
-    """Extract package name from an npm install path.
+def _prefer(candidate: Package, existing: Package) -> bool:
+    """Return True if `candidate` should replace `existing`.
+
+    Policy: direct beats transitive; otherwise higher version string wins.
     """
+    if candidate.is_direct and not existing.is_direct:
+        return True
+    if existing.is_direct and not candidate.is_direct:
+        return False
+    return candidate.version > existing.version
+
+
+def _name_from_path(install_path: str) -> str | None:
+    """Extract package name from an npm install path."""
     marker = "node_modules/"
     idx = install_path.rfind(marker)
     if idx == -1:
