@@ -4,6 +4,9 @@ Reading diff of lock files while upgrading packages can result painful and time 
 
 Works on `uv.lock` (Python) and `package-lock.json` (npm).
 
+Read more at [Drawing Board](https://basz-website.basgug25.workers.dev/projects/lockdiff/)
+
+
 ## Demo
 
 uv:
@@ -78,4 +81,3 @@ src/lockdiff/
 
 Both parsers return the same shape (`dict[str, Package]`), so `diff` and `render` don't care which ecosystem the input came from. npm trees often hold multiple versions of the same package; lockdiff collapses them per name (direct beats transitive, then highest version wins).
 
-Read more at [Drawing Board](https://basz-website.basgug25.workers.dev/vault/Lockdiff/)
