@@ -22,19 +22,28 @@ def main(argv: list[str] | None = None) -> int:
             description = "Human-readable diff for uv.lock and package-lock.json files")
     p.add_argument("old_lock", type=Path, help="Path to old lockfile.")
     p.add_argument("new_lock", type=Path, help="Path to new lockfile.")
+    p.add_argument(
+        "--ecosystem",
+        choices=("auto", "uv", "npm"),
+        default="auto",
+        help="Lockfile ecosystem. 'auto' (default) sniffs file contents.",
+    )
 
     args=p.parse_args(argv)
 
     try:
-        old_fmt = detect_format(args.old_lock)
-        new_fmt = detect_format(args.new_lock)
-        if old_fmt != new_fmt:
-            print(
-                f"error: format mismatch: {args.old_lock} is {old_fmt}, "
-                f"{args.new_lock} is {new_fmt}",
-                file=sys.stderr,
-            )
-            return 2
+        if args.ecosystem == "auto":
+            old_fmt = detect_format(args.old_lock)
+            new_fmt = detect_format(args.new_lock)
+            if old_fmt != new_fmt:
+                print(
+                    f"error: format mismatch: {args.old_lock} is {old_fmt}, "
+                    f"{args.new_lock} is {new_fmt}; pass --ecosystem to override",
+                    file=sys.stderr,
+                )
+                return 2
+        else:
+            old_fmt = new_fmt = args.ecosystem
         old_pkgs = _PARSERS[old_fmt](args.old_lock)
         new_pkgs = _PARSERS[new_fmt](args.new_lock)
     except (FileNotFoundError, ValueError) as e:
