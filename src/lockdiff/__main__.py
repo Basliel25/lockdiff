@@ -16,15 +16,15 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
             prog = "lockdiff",
             description = "Human-readable diff for uv.lock files")
-    p.add_argument("old", type=Path, help="Path to old lockfile.")
-    p.add_argument("new", type=Path, help="Path to new lockfile.")
+    p.add_argument("old_lock", type=Path, help="Path to old lockfile.")
+    p.add_argument("new_lock", type=Path, help="Path to new lockfile.")
 
     args=p.parse_args(argv)
 
     # Check if file exists
     try:
-        old_pkgs = parse(args.old)
-        new_pkgs = parse(args.new)
+        old_pkgs = parse(args.old_lock)
+        new_pkgs = parse(args.new_lock)
     except (FileNotFoundError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
