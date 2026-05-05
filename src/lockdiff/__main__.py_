@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 from .diff import diff
-from .parser import Parse
+from .Parser import parse
 from .render import render
 
 def main(argv: list[str] | None = None) -> int:
@@ -23,10 +23,17 @@ def main(argv: list[str] | None = None) -> int:
 
     # Check if file exists
     try:
-        old_pkgs = Parse(args.old)
-        new_pkgs = Parse(args.new)
+        old_pkgs = parse(args.old)
+        new_pkgs = parse(args.new)
     except (FileNotFoundError, ValueError) as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
+    result = diff(old_pkgs, new_pkgs)
+    print(render(result))
+
+    return 0 if result.is_empty else 1
+
+if __name__ == "__main__":
+    raise SystemExit(main())
 
 
