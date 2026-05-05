@@ -2,7 +2,7 @@
 This program parses a uv.lock file into a list of package objeects listed in the file.
 
 @author: Basliel B. Gugsa
-@last_edit:30/04/26
+@last_edit:05/05/26
 """
 
 from __future__ import annotations
