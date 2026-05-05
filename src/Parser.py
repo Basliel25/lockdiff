@@ -42,11 +42,24 @@ def parse(path: Path) -> dict[str, Package]:
     direct_deps: set[str] = set()
 
     for pkg in raw_packages:
-        ...
+        source = pkg.get("source", {})
+        if "editable" in source or "virtual" in source:
+            for dep in pkg.get("dependencies", []):
+                direct_deps.add(dep["name"])
 
     result: dict[str, Package] = {}
-
     for pkg in raw_packages:
-        ...
+        name = pkg["name"]
+        source = pkg.get("source", {})
+        if "editable" in source or "virtual" in source:
+            continue
+
+        deps = tuple(d["name"] for d in pkg.get("dependencies", []))
+        result[name] = Package(
+            name=name,
+            version=pkg["version"],
+            is_direct=name in direct_deps,
+            dependencies=deps,
+        )
 
     return result
