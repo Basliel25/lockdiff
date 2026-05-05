@@ -1,6 +1,6 @@
 # lockdiff
 
-Reading lockfile diffs is crazy. Thousands of lines of churn for a handful of real changes. `lockdiff` is a human-oriented parser: feed it two lockfiles, get back what was added, removed, and bumped.
+Reading diff of lock files while upgrading packages can result painful and time draining. Thousands of lines of churn for a handful of real changes. `lockdiff` is a human-oriented package diff parser. It takes two lockfiles, returns what was added, removed, and bumped.
 
 Works on `uv.lock` (Python) and `package-lock.json` (npm).
 
